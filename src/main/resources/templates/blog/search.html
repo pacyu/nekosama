@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:replace="~{blog/layout :: layout(~{:: title}, ~{:: link}, ~{}, ~{:: section}, ~{:: div.slider})}">
+<head>
+	<title>搜索 | Nekosama</title>
+
+	<!-- Stylesheets -->
+
+	<link th:href="@{~/blog/layout-1/css/styles.css}" rel="stylesheet">
+
+	<link th:href="@{~/blog/layout-1/css/responsive.css}" rel="stylesheet">
+
+</head>
+<body >
+
+    <div class="slider"></div><!-- slider -->
+
+	<section class="blog-area section" th:switch="${resultType}">
+		<div class="container" th:case="archive">
+
+			<div class="row">
+
+				<div class="col-lg-4 col-md-6" th:each="archive: ${archives}">
+					<div class="card h-100">
+
+						<div class="single-post post-style-2 post-style-3">
+
+							<div class="blog-info">
+
+								<h4 class="title"><a th:href="@{/archive(aid=${archive.id})}"><b>[[${archive.title}]]</b></a></h4>
+
+								<p>[[${archive.introduction}]]</p>
+
+								<div class="avatar-area">
+									<a class="avatar" th:href="@{/about}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+									<div class="right-area">
+										<a class="name" th:href="@{/about}"><b>[[${archive.author}]]</b></a>
+										<h6 class="date" href="#">[[${#dates.format(archive.releaseDate, 'yyyy-MM-dd hh:mm:ss')}]]</h6>
+									</div>
+								</div>
+
+								<ul class="post-footer">
+									<li><a th:onclick="onLikesClick([[${archive.id}]])"><i class="ion-heart"></i>[[${archive.likes}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-chatbubble"></i>[[${archive.reviews}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-eye"></i>[[${archive.views}]]</a></li>
+								</ul>
+
+							</div><!-- blog-right -->
+
+						</div><!-- single-post extra-blog -->
+
+					</div><!-- card -->
+				</div><!-- col-lg-4 col-md-6 -->
+
+            </div><!-- row -->
+
+            <a class="load-more-btn" th:if="${isAll} != true" th:href="@{/search(q=${searchWord}, page=${page + 1})}"><b>LOAD MORE</b></a>
+        </div><!-- container -->
+        
+        <div class="container" th:case="tag">
+            <div class="row">
+
+            </div>
+        </div>
+
+        <div class="container" th:case="date">
+            <div class="row">
+                <div class="col-lg-4 col-md-6" th:each="archive: ${archives}">
+
+                    <div class="card h-100">
+
+                        <div class="single-post post-style-2 post-style-3">
+
+                            <div class="blog-info">
+
+                                <h4 class="title"><a th:href="@{/archive(aid=${archive.id})}"><b>[[${archive.title}]]</b></a></h4>
+
+                                <p>[[${archive.introduction}]]</p>
+
+                                <div class="avatar-area">
+                                    <a class="avatar" th:href="@{/about}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+                                    <div class="right-area">
+                                        <a class="name" th:href="@{/about}"><b>[[${archive.author}]]</b></a>
+                                        <h6 class="date" href="#">[[${#dates.format(archive.releaseDate, 'yyyy-MM-dd hh:mm:ss')}]]</h6>
+                                    </div>
+                                </div>
+
+                                <ul class="post-footer">
+                                    <li><a th:onclick="onLikesClick([[${archive.id}]])"><i class="ion-heart"></i>[[${archive.likes}]]</a></li>
+                                    <li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-chatbubble"></i>[[${archive.reviews}]]</a></li>
+                                    <li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-eye"></i>[[${archive.views}]]</a></li>
+                                </ul>
+
+                            </div><!-- blog-right -->
+
+                        </div><!-- single-post extra-blog -->
+
+                    </div><!-- card -->
+                    
+                </div><!-- col-lg-4 col-md-6 -->
+            </div>
+            <a class="load-more-btn" th:if="${isAll} != true" th:href="@{/search(q=${searchWord}, page=${page + 1})}"><b>LOAD MORE</b></a>
+        </div>
+
+        <div class="container" th:case="cover">
+            <div class="row">
+                <div class="col-lg-4 col-md-6" th:each="archive: ${archives}">
+                    <div class="card h-100">
+                        <div class="single-post post-style-1">
+                            <div class="blog-image"><img th:src="@{~/blog/images/} + '' + ${archive.cover}" alt="Blog Image"></div>
+                            <div class="blog-info">
+                                <h4 class="title"><a href="javascript:void(0)"></a><b>[[${archive.cover}]]</b></a></h4>
+                            </div>
+                        </div><!-- single-post extra-blog -->
+                    </div><!-- card -->
+                </div><!-- col-lg-4 col-md-6 -->
+            </div>
+            <a class="load-more-btn" th:if="${isAll} != true" th:href="@{/search(q=${searchWord}, page=${page + 1})}"><b>LOAD MORE</b></a>
+        </div>
+
+        <div class="container" th:case="notfound">
+            <div class="row">
+
+            </div>
+        </div>
+
+        <div class="container" th:case="search">
+            <div class="row">
+
+            </div>
+        </div>
+
+        
+	</section><!-- section -->
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<html th:fragment="layout (title, navigate, script, content)" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:replace="${title}"></title>
+
+        <meta charset="UTF-8"/>
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        
+        <!-- Font -->
+
+        <link th:href="@{https://fonts.googleapis.com/css?family=Roboto:300,400,500}" rel="stylesheet">
+
+        <!-- Stylesheets -->
+
+        <link th:href="@{/webjars/bootstrap/4.4.1/css/bootstrap.css}" rel="stylesheet"/>
+
+        <link th:href="@{~/blog/common-css/ionicons.css}" rel="stylesheet">
+
+        <link th:href="@{~/blog/layout-1/css/styles.css}" rel="stylesheet">
+
+        <link th:href="@{~/blog/layout-1/css/responsive.css}" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+
+    </head>
+    
+    <body>
+        <header>
+            <div class="container-fluid position-relative no-side-padding">
+        
+                <a th:href="@{/index}" class="logo"><img th:src="@{~/blog/images/logo.png}" alt="Logo Image"></a>
+        
+                <div class="menu-nav-icon" data-nav-menu="#main-menu"><i class="ion-navicon"></i></div>
+        
+                <ul class="main-menu visible-on-click" id="main-menu">
+                    <li><a th:href="@{/index}">主页</a></li>
+                    <li th:replace="${navigate}"></li>
+                </ul><!-- main-menu -->
+        
+                <div class="src-area">
+                    <form th:action="@{/search}" method="GET">
+                        <button class="src-btn" type="submit"><i class="ion-ios-search-strong"></i></button>
+                        <input class="src-input" type="text" name="q" placeholder="Type of search">
+                    </form>
+                </div>
+        
+            </div><!-- conatiner -->
+        </header>
+        
+        <div class="slider"></div><!-- slider -->
+
+        <div class="container"><div class="col-lg-1 col-md-0"></div><a class="back-btn" href="javascript:void(0)" onclick="javascript:history.back(-1);"><b>返回</b></a></div>
+
+        <section th:replace="${content}"></section>
+
+        <a href="#" class="go-top-btn" title="回到顶端">∧</a>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+    
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-section">
+    
+                            <a class="logo" th:href="@{/index}"><img th:src="@{~/blog/images/logo.png}" alt="Logo Image"></a>
+                            <p class="copyright">Nekosama &copy; 2020. All rights reserved.</p>
+                            <p class="copyright">Designed by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+                            <ul class="icons">
+                                <li><a th:href="@{https://www.youtube.com/channel/UCv0ZUlQUTY6moeIaGST0NFQ}"><i class="ion-social-youtube-outline"></i></a></li>
+                                <li><a th:href="@{https://twitter.com/tennshiniaitai}"><i class="ion-social-twitter-outline"></i></a></li>
+                                <li><a th:href="@{https://www.instagram.com/shinnjitsu/}"><i class="ion-social-instagram-outline"></i></a></li>
+                                <li><a th:href="@{https://www.pinterest.com/darkxzw/}"><i class="ion-social-pinterest-outline"></i></a></li>
+                                <li><a th:href="@{https://www.github.com/darkchii}"><i class="ion-social-github-outline"></i></a></li>
+                            </ul>
+    
+                        </div><!-- footer-section -->
+                    </div><!-- col-lg-4 col-md-6 -->
+    
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-section">
+    
+                            <h4 class="title"><b>我的邮箱</b></h4>
+                            <div class="input-area">
+                                <p class="para">darkchii@qq.com</p>
+                                <p class="para">darkxzw@gmail.com</p>
+                                <p class="para">darkchii@outlook.com</p>
+                            </div>
+    
+                        </div><!-- footer-section -->
+                    </div><!-- col-lg-4 col-md-6 -->
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-section">
+    
+                            <h4 class="title"><b>反馈</b></h4>
+                            <div class="input-area">
+                                <input class="email-input" id="email-input" type="text" placeholder="Enter your email">
+                                <button class="submit-btn" type="submit" onclick="bugFeedbackClick()"><i class="icon ion-ios-email-outline"></i></button>
+                            </div>
+                            <textarea class="text-area-messge form-control" id="feedback-textarea" rows="4" placeholder="有什么 Bug、疑问或者想了解我、找我聊天等都可以告诉我哟~"></textarea>
+    
+                        </div><!-- footer-section -->
+                    </div><!-- col-lg-4 col-md-6 -->
+    
+                </div><!-- row -->
+    
+            </div><!-- container -->
+        </footer>
+
+        <script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+        
+        <script th:src="@{~/blog/common-js/tether.min.js}"></script>
+
+        <script th:src="@{/webjars/bootstrap/4.4.1/js/bootstrap.min.js}"></script>
+
+        <script th:src="@{~/blog/common-js/swiper.js}"></script>
+
+        <script th:src="@{~/blog/common-js/scripts.js}"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+
+        <script>hljs.initHighlightingOnLoad();</script>
+
+        <script th:replace="${script}"></script>
+
+    </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:replace="~{blog/layout :: layout(~{:: title}, ~{:: link}, ~{:: script}, ~{:: section}, ~{:: div.slider})}">
+<head>
+	<title>实验室 | Nekosama</title>
+
+	<!-- Stylesheets -->
+
+	<link th:href="@{~/blog/lab/css/styles.css}" rel="stylesheet">
+
+    <link th:href="@{~/blog/lab/css/responsive.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body >
+
+    <div class="slider center-text">
+		<div class="container height-100">
+			<div class="row height-100">
+
+				<div class="col-lg-1 hidden-md-down"></div>
+
+				<div class="col-lg-10 col-md-12">
+					<div class="display-table">
+						<div class="display-table-cell">
+							<h5 class="pre-title">该模块的功能</h5>
+
+							<h3 class="title"><b>该模块我主要想用来做一些实验性的功能，方便展示效果，比如 js 实现富文本编辑器、歌词制作、latex、生成一些图或动画等。</b></h3>
+
+						</div><!-- display-table-cell -->
+					</div><!-- display-table -->
+
+				</div><!-- col-lg-10 -->
+			</div><!-- row -->
+		</div><!-- conatiner -->
+	</div><!-- slider -->
+
+    <section>
+
+    </section>
+
+</body>
+</html>

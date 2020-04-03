@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:replace="~{blog/layout :: layout(~{:: title}, ~{:: link}, ~{:: script}, ~{:: section.blog-area}, ~{:: div.main-slider})}">
+<head>
+	<title>分类目录 | Nekosama</title>
+
+	<!-- Stylesheets -->
+
+	<link th:href="@{~/blog/common-css/swiper.css}" rel="stylesheet">
+
+
+	<link th:href="@{~/blog/category/css/styles.css}" rel="stylesheet">
+
+	<link th:href="@{~/blog/category/css/responsive.css}" rel="stylesheet">
+
+</head>
+<body >
+
+	<div class="main-slider">
+		<div class="swiper-container position-static" data-slide-effect="slide" data-autoheight="false"
+			data-swiper-speed="500" data-swiper-autoplay="10000" data-swiper-margin="0" data-swiper-slides-per-view="4"
+			data-swiper-breakpoints="true" data-swiper-loop="true" >
+			<div class="swiper-wrapper">
+
+				<div class="swiper-slide" th:each="category: ${categories}">
+					<a class="slider-category" th:href="@{/category(cw=${category.kind})}">
+						<div class="blog-image"><img th:src="@{~/blog/images/} + '' + ${category.bgImage}" alt="Blog Image"></div>
+
+						<div class="category">
+							<div class="display-table center-text">
+								<div class="display-table-cell">
+									<h3><b>[[${category.kind}]]</b></h3>
+								</div>
+							</div>
+						</div>
+
+					</a>
+				</div><!-- swiper-slide -->
+
+			</div><!-- swiper-wrapper -->
+
+		</div><!-- swiper-container -->
+
+	</div><!-- slider -->
+
+	<section class="blog-area section" >
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-lg-4 col-md-6" th:each="archive: ${archives}">
+					<div class="card h-100">
+						<div class="single-post post-style-1">
+
+							<div class="blog-image"><img th:src="@{~/blog/images/} + '' + ${archive.cover}" alt="Blog Image"></div>
+
+							<a class="avatar" th:href="@{/about}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+
+							<div class="blog-info">
+
+								<h4 class="title"><a th:href="@{/archive(aid=${archive.id})}"><b>[[${archive.title}]]</b></a></h4>
+
+								<ul class="post-footer">
+									<li><a th:href="@{javascript:void(0)}" th:onclick="onLikesClick([[${archive.id}]])"><i class="ion-heart"></i>[[${archive.likes}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-chatbubble"></i>[[${archive.reviews}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-eye"></i>[[${archive.views}]]</a></li>
+								</ul>
+
+							</div><!-- blog-info -->
+						</div><!-- single-post -->
+					</div><!-- card -->
+				</div><!-- col-lg-4 col-md-6 -->
+
+			</div><!-- row -->
+
+			<a class="load-more-btn" th:if="${isAll} != true" th:href="@{/category(cw=(${cw} == null ?: _), page=(${page} == null ?: _))}"><b>LOAD MORE</b></a>
+
+		</div><!-- container -->
+	</section><!-- section -->
+	<script th:src="@{~/blog/common-js/likes.js}"></script>
+</body>
+</html>

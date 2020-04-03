@@ -1,0 +1,95 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{:: script}, ~{:: section})}">
+    <head>
+        <title>博客后台 | 用户管理</title>
+    </head>
+    <body>
+
+        <header>
+            <ul>
+                <li><a th:href="@{/manager/archives}">Articles</a></li>
+                <li><a th:href="@{/manager/users}">Users</a></li>
+                <li><a th:href="@{/manager/comments}">Reviews</a></li>
+                <li><a th:href="@{/manager/tags}">Tags</a></li>
+                <li><a th:href="@{/manager/categories}">Categories</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </header>
+        
+        <section>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>操作</th>
+                        <th>
+                            <input type="text" id="userText"/>
+                            <input type="email" id="email"/>
+                            <button type="button" name="add" class="btn btn-success" th:onclick="crudController(this, 'add');">新增</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user,iterStat: ${users}">
+                        <td><input type="checkbox" th:data-id="${user.id}" name="select" unchecked/></td>
+                        <td th:text="${iterStat.count}"></td>
+                        <td><span>[[${user.username}]]</span></td>
+                        <td><span>[[${user.email}]]</span></td>
+                        <td>
+                            <div>
+                                <button type="button" th:data-id="${user.id}" class="btn btn-danger" name="delete" th:onclick="crudController(this.getAttribute('data-id'), 'delete');">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+        <script>
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            function crudController(data_id, operator) {
+                switch (operator)
+                {
+                    case 'add':
+                        var userText = $("#userText").val();
+                        var email = $("#email").val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/user',
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'add', user: userText, email: email}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'delete':
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/api/user/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'delete'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                }
+            };
+        </script>
+    </body>
+</html>

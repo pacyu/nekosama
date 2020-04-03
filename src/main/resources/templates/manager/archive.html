@@ -1,0 +1,144 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{:: script}, ~{:: section})}">
+    <head>
+        <title>博客后台 | 文章管理</title>
+    </head>
+    <body>
+        <header>
+            <ul>
+                <li><a th:href="@{/manager/archives}">Articles</a></li>
+                <li><a th:href="@{/manager/users}">Users</a></li>
+                <li><a th:href="@{/manager/comments}">Reviews</a></li>
+                <li><a th:href="@{/manager/tags}">Tags</a></li>
+                <li><a th:href="@{/manager/categories}">Categories</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </header>
+
+        <section>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>标题</th>
+                        <th>简介</th>
+                        <th>封面</th>
+                        <th>发布时间</th>
+                        <th>作者</th>
+                        <th>标签</th>
+                        <th>分类</th>
+                        <th>点赞数</th>
+                        <th>浏览量</th>
+                        <th>评论数</th>
+                        <th>编辑次数</th>
+                        <th>最近修改时间</th>
+                        <th>操作</th>
+                        <th>
+                            <a th:href="@{/manager/edit}" id="add">新增</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="doc,iterStat: ${archives}">
+                        <td><input type="checkbox" th:data-id="${doc.id}" name="select" unchecked/></td>
+                        <td th:text="${iterStat.count}"></td>
+                        <td><a th:href="@{/archive(aid=${doc.id})}">[[${doc.title}]]</a></td>
+                        <td th:text="${doc.introduction}"></td>
+                        <td><span th:id="'js-span-cover-image' + ${doc.id}">[[${doc.cover}]]</span></td>
+                        <td th:text="${#dates.format(doc.releaseDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${doc.author}"></td>
+                        <td>
+                            <div th:each="tag: ${doc.tag}">
+                                <span>[[${tag}]]</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:each="category: ${doc.category}">
+                                <span>[[${category}]]</span>
+                            </div>
+                        </td>
+                        <td><span>[[${doc.likes}]]</span></td>
+                        <td><span>[[${doc.views}]]</span></td>
+                        <td><span>[[${doc.reviews}]]</span></td>
+                        <td th:text="${doc.editCount}"></td>
+                        <td th:text="${#dates.format(doc.updateDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td>
+                            <div>
+                                <form th:action="@{/manager/edit}" method="POST">
+                                    <input type="hidden" name="id" th:value="${doc.id}"/>
+                                    <input type="submit" value="修改"/>
+                                </form>
+                            </div>
+                            <div>
+                                <button type="button" th:data-id="${doc.id}" class="btn btn-danger" name="delete" th:onclick="crudController(this.getAttribute('data-id'), 'delete');">删除</button>
+                                <input type="button" th:data-id="${doc.id}" name="remove" th:onclick="crudController(this.getAttribute('data-id'), 'remove');" th:value="${doc.isRemove}? '恢复' : '移至回收站'"/>
+                            </div>
+                            <div>
+                                <input type="button" th:data-id="${doc.id}" class="btn btn-success" name="draft" th:onclick="crudController(this.getAttribute('data-id'), 'draft');" th:value="${doc.isDraft}? '发布' : '转为草稿'"/>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+        <script>
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            function crudController(data_id, operator) {
+                switch (operator)
+                {
+                    case 'delete':
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/api/archive/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'delete'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'remove':
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/archive/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'remove'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'draft':
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/archive/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'draft'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        })
+                        break;
+                }
+            };
+        </script>
+    </body>
+</html>

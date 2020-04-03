@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:replace="~{blog/layout :: layout(~{:: title}, ~{:: link}, ~{}, ~{:: section.blog-area}, ~{:: div.slider})}">
+<head>
+	<title>关于我 | Nekosama</title>
+
+	<!-- Stylesheets -->
+
+
+	<link th:href="@{~/blog/about/css/styles.css}" rel="stylesheet">
+
+	<link th:href="@{~/blog/about/css/responsive.css}" rel="stylesheet">
+
+</head>
+<body >
+
+	<div class="slider display-table center-text">
+		<h1 class="title display-table-cell"><b>About me</b></h1>
+	</div><!-- slider -->
+
+	<section class="blog-area section">
+		<div class="container">
+
+			<div class="row">
+				
+				<div class="col-lg-8 col-md-12">
+					<div class="post-wrapper">
+
+						<h3 class="title"><a th:href="@{/archive(aid=(${about} == null? '': ${about.id}))}"><b>[[${about} == null? '' : ${about.title}]]</b></a></h3>
+
+						<p class="para">[(${about.content})]</p>
+
+						<div class="post-image"><img th:src="@{~/blog/images/} + '' + ${about.cover}" alt="Blog Image"></div>
+					</div><!-- post-wrapper -->
+				</div><!-- col-sm-8 col-sm-offset-2 -->
+
+				<div class="col-lg-4 col-md-12 ">
+
+					<div class="single-post info-area ">
+
+						<div class="about-area">
+							<h4 class="title"><b>赞赏码</b></h4>
+							<div class="blog-image"><img th:src="@{~/blog/images/2d_code.png}" alt="Blog Image"></div>
+						</div>
+
+						<div class="tag-area">
+
+							<h4 class="title"><b>TAG CLOUD</b></h4>
+							<ul th:each="tag: ${tags}">
+								<li><a th:href="@{/search(q=${tag.tag})}">[[${tag.tag}]]</a></li>
+							</ul>
+
+						</div><!-- subscribe-area -->
+
+					</div><!-- info-area -->
+
+				</div><!-- col-lg-4 col-md-12 -->
+			</div><!-- row -->
+
+		</div><!-- container -->
+	</section><!-- section -->
+
+</body>
+</html>

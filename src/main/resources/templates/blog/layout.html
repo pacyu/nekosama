@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:fragment="layout (title, css, script, content, slider)" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:replace="${title}">主页 | Nekosama</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+	<!-- Font -->
+
+	<link th:href="@{https://fonts.googleapis.com/css?family=Roboto:300,400,500}">
+
+
+	<!-- Stylesheets -->
+
+	<link th:href="@{~/blog/common-css/bootstrap.css}" rel="stylesheet">
+
+	<link th:href="@{~/blog/common-css/ionicons.css}" rel="stylesheet">
+
+
+	<link th:replace="${css}">
+
+</head>
+<body>
+
+	<header>
+		<div class="container-fluid position-relative no-side-padding">
+
+			<a th:href="@{/index}" class="logo"><img th:src="@{~/blog/images/logo.png}" alt="Logo Image"></a>
+
+			<div class="menu-nav-icon" data-nav-menu="#main-menu"><i class="ion-navicon"></i></div>
+
+			<ul class="main-menu visible-on-click" id="main-menu">
+				<li><a th:href="@{/index}">主页</a></li>
+				<li><a th:href="@{/category}">分类目录</a></li>
+				<li><a th:href="@{/lab}">实验室</a></li>
+                <li><a th:href="@{/about}">关于博主</a></li>
+                <li><a th:href="@{/manager}">博客后台</a></li>
+			</ul><!-- main-menu -->
+
+			<div class="src-area">
+				<form th:action="@{/search}" method="GET">
+					<button class="src-btn" type="submit"><i class="ion-ios-search-strong"></i></button>
+					<input class="src-input" type="text" name="q" placeholder="Type of search">
+				</form>
+			</div>
+
+		</div><!-- conatiner -->
+	</header>
+
+	<div class="slider" th:replace="${slider}"></div><!-- slider -->
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert alert-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">小提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="success-message"></p>
+                </div>
+                <div class="modal-footer">
+					<button class="btn btn-success btn-secondary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+	</div>
+	
+	<section th:replace="${content}">
+		
+	</section><!-- section -->
+
+	<footer>
+
+		<div class="container">
+			<div class="row">
+
+				<div class="col-lg-4 col-md-6">
+					<div class="footer-section">
+
+						<a class="logo" th:href="@{/index}"><img th:src="@{~/blog/images/logo.png}" alt="Logo Image"></a>
+						<p class="copyright">Nekosama &copy; 2020. All rights reserved.</p>
+						<p class="copyright">Designed by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+						<ul class="icons">
+							<li><a th:href="@{https://www.youtube.com/channel/UCv0ZUlQUTY6moeIaGST0NFQ}"><i class="ion-social-youtube-outline"></i></a></li>
+							<li><a th:href="@{https://twitter.com/tennshiniaitai}"><i class="ion-social-twitter-outline"></i></a></li>
+                            <li><a th:href="@{https://www.instagram.com/shinnjitsu/}"><i class="ion-social-instagram-outline"></i></a></li>
+                            <li><a th:href="@{https://www.pinterest.com/darkxzw/}"><i class="ion-social-pinterest-outline"></i></a></li>
+							<li><a th:href="@{https://www.github.com/darkchii}"><i class="ion-social-github-outline"></i></a></li>
+						</ul>
+
+					</div><!-- footer-section -->
+				</div><!-- col-lg-4 col-md-6 -->
+
+				<div class="col-lg-4 col-md-6">
+						<div class="footer-section">
+						<h4 class="title"><b>Categories</b></h4>
+						<ul th:each="category: ${categories}">
+							<li th:each="category_item: ${category}"><a th:href="@{/category(cw=${category_item.kind})}">[[${category_item.kind}]]</a></li>
+						</ul>
+						<br>
+						<h4 class="title"><b>我的联系方式</b></h4>
+                        <div class="input-area">
+                            <p class="para">darkchii@qq.com</p>
+                            <p class="para">darkxzw@gmail.com</p>
+                            <p class="para">darkchii@outlook.com</p>
+                        </div>
+					</div><!-- footer-section -->
+				</div><!-- col-lg-4 col-md-6 -->
+
+				<div class="col-lg-4 col-md-6">
+					<div class="footer-section">
+						<h4 class="title"><b>反馈</b></h4>
+						<div class="input-area">
+							<input class="email-input" id="email-input" type="text" placeholder="Enter your email">
+							<button class="submit-btn" type="submit" onclick="bugFeedbackClick()"><i class="icon ion-ios-email-outline"></i></button>
+						</div>
+						<textarea class="text-area-messge form-control" id="feedback-textarea" rows="4" placeholder="有什么 Bug、疑问或者想了解我、找我聊天等都可以告诉我哟~"></textarea>
+					</div><!-- footer-section -->
+				</div><!-- col-lg-4 col-md-6 -->
+
+			</div><!-- row -->
+
+			<a href="#" class="go-top-btn" title="回到顶端">∧</a>
+        </div><!-- container -->
+        
+	</footer>
+
+
+	<!-- SCIPTS -->
+
+	<script th:src="@{~/blog/common-js/jquery-3.4.1.min.js}"></script>
+
+	<script th:src="@{~/blog/common-js/tether.min.js}"></script>
+
+	<script th:src="@{~/blog/common-js/bootstrap.js}"></script>
+    
+    <script th:src="@{~/blog/common-js/swiper.js}"></script>
+
+	<script th:src="@{~/blog/common-js/scripts.js}"></script>
+	
+	<script>
+		var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+
+		function bugFeedbackClick() {
+			var senderEmail = $('#email-input').val();
+			var content = $('#feedback-textarea').val();
+			var postData = JSON.stringify({
+				senderEmail: senderEmail,
+				content: content
+			});
+			if (!senderEmail || !content) {
+				alert('必须正确填写邮箱和内容~');
+			}
+			$.ajax({
+				type: 'POST',
+				url: '/api/feedback',
+				contentType: 'application/json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				data: postData,
+				dataType: 'json',
+				success: function(data) {
+					console.log(data);
+					$('.success-message').text(data);
+					$('#myModal').modal('show');
+					senderEmail.val('');
+					content.val('');
+				},
+				error: function(request, err) {
+					$('.success-message').text('邮件发送失败！');
+					$('#myModal').modal('show');
+				}
+			})
+		}
+		
+	</script>
+    
+    <script th:replace=${script}></script>
+
+</body>
+</html>

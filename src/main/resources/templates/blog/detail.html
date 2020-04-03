@@ -1,0 +1,322 @@
+<!DOCTYPE HTML>
+<html lang="zh-cn" th:replace="~{blog/layout :: layout(~{:: title}, ~{:: link}, ~{:: script}, ~{:: section}, ~{:: div.slider})}">
+<head>
+	<title>[[${article.title}]] | Nekosama</title>
+
+	<!-- Stylesheets -->
+
+	<link th:href="@{~/blog/detail/css/styles.css}" rel="stylesheet">
+
+	<link th:href="@{~/blog/detail/css/responsive.css}" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+    
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+	
+	<script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body th:onload="pageLoaded([[${article.id}]])">
+
+	<div class="slider"></div><!-- slider -->
+
+	<section class="post-area">
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-lg-1 col-md-0"></div>
+				<div class="col-lg-10 col-md-12">
+
+					<div class="main-post">
+
+						<div class="post-top-area">
+
+							<h3 class="title"><a href="javascript:void(0)"><b>[[${article.title}]]</b></a></h3>
+
+							<div class="post-info">
+
+								<div class="left-area">
+									<a class="avatar" th:href="@{javascript:void(0)}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+								</div>
+
+								<div class="middle-area">
+									<a class="name" th:href="@{/about}"><b>[[${article.author}]]</b></a>
+									<h6 class="date">[[${#dates.format(article.releaseDate, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+								</div>
+
+							</div><!-- post-info -->
+
+							<p class="para">[(${article.content})]</p>
+
+						</div><!-- post-top-area -->
+
+						<div class="post-image"><img th:src="@{~/blog/images/} + '' + ${article.cover}" alt="Blog Image"></div>
+
+						<div class="post-bottom-area">
+
+							<ul class="tags">
+								<li th:each="tag: ${article.tag}"><a th:href="@{/search(q=${tag})}">[[${tag}]]</a></li>
+							</ul>
+
+							<div class="post-icons-area">
+								<ul class="post-icons">
+									<li><a th:href="@{#}" th:onclick="onLikesClick([[${article.id}]])"><i class="ion-heart"></i>[[${article.likes}]]</a></li>
+									<li><a th:href="@{#}"><i class="ion-chatbubble"></i>[[${article.reviews}]]</a></li>
+									<li><a th:href="@{#}"><i class="ion-eye"></i>[[${article.views}]]</a></li>
+								</ul>
+
+								<ul class="icons">
+									<li th:if="${article.updateDate} != null">最近编辑时间 : </li>
+									<li><p><i class="ion-social-edit"></i>[[${#dates.format(article.updateDate, 'yyyy-MM-dd HH:mm:ss')}]]</p></li>
+								</ul>
+							</div>
+
+							<div class="post-footer post-info">
+
+								<div class="left-area">
+									<a class="avatar" th:href="@{/search}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+								</div>
+
+								<div class="middle-area">
+									<a class="name" th:href="@{/about}"><b>[[${article.author}]]</b></a>
+									<h6 class="date">[[${#dates.format(article.releaseDate, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+								</div>
+
+							</div><!-- post-info -->
+
+						</div><!-- post-bottom-area -->
+
+					</div><!-- main-post -->
+				</div><!-- col-lg-8 col-md-12 -->
+			</div><!-- row -->
+		</div><!-- container -->
+	</section><!-- post-area -->
+
+
+	<section class="recomended-area section">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-lg-4 col-md-6" th:each="archive : ${archives}">
+					<div class="card h-100">
+						<div class="single-post post-style-1">
+
+							<div class="blog-image"><img th:src="@{~/blog/images/} + '' + ${archive.cover}" alt="Blog Image"></div>
+
+							<a class="avatar" th:href="@{/about}"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+
+							<div class="blog-info">
+
+								<h4 class="title"><a th:href="@{/archive(aid=${archive.id})}"><b>[[${archive.title}]]</b></a></h4>
+
+								<ul class="post-footer">
+									<li><a th:href="@{#}" th:onclick="onLikesClick([[${archive.id}]])"><i class="ion-heart"></i>[[${archive.likes}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-chatbubble"></i>[[${archive.reviews}]]</a></li>
+									<li><a th:href="@{/archive(aid=${archive.id})}"><i class="ion-eye"></i>[[${archive.views}]]</a></li>
+								</ul>
+
+							</div><!-- blog-info -->
+						</div><!-- single-post -->
+					</div><!-- card -->
+				</div><!-- col-md-6 col-sm-12 -->
+
+			</div><!-- row -->
+
+		</div><!-- container -->
+	</section>
+
+	<section class="comment-section center-text">
+		<div class="container">
+			<h4><b>发送评论</b></h4>
+			<div class="row">
+
+				<div class="col-lg-2 col-md-0"></div>
+
+				<div class="col-lg-8 col-md-12" id="js-comment-area-move">
+					<div class="comment-form">
+						<form>
+							<div class="row">
+
+								<div class="col-sm-6">
+									<input type="text" aria-required="true" name="contact-form-name" class="form-control"
+										placeholder="Enter your name" aria-invalid="true" required >
+								</div><!-- col-sm-6 -->
+								<div class="col-sm-6">
+									<input type="email" aria-required="true" name="contact-form-email" class="form-control"
+										placeholder="Enter your email" aria-invalid="true" required>
+								</div><!-- col-sm-6 -->
+
+								<div class="col-sm-12">
+									<textarea name="contact-form-message" rows="2" class="text-area-messge form-control"
+										placeholder="Enter your comment" aria-required="true" aria-invalid="false"></textarea >
+								</div><!-- col-sm-12 -->
+								<div class="col-sm-12">
+									<button class="submit-btn" type="button" id="form-submit" th:onclick="postCommentButtonClick()"><b>发送评论</b></button>
+								</div><!-- col-sm-12 -->
+
+							</div><!-- row -->
+						</form>
+					</div><!-- comment-form -->
+
+					<h4><b>评论 ([[${article.reviews}]])</b></h4>
+
+					<div class="commnets-area text-left" th:each="layer, iterStat: ${comments}">
+
+						<div class="comment" th:id="'js-comment-' + ${iterStat.count}">
+
+							<div class="post-info">
+
+								<div class="left-area">
+									<a class="avatar" href="#"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+								</div>
+
+								<div class="middle-area">
+									<a class="name" href="#"><b>[[${layer.master.username}]]</b></a>
+									<h6 class="date">[[${#dates.format(layer.master.replyDate, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+								</div>
+
+								<div class="right-area">
+									<h5 class="reply-btn"><a href="javascript:void(0)" th:id="'js-comment-area-btn-' + ${iterStat.count}" th:data-id="${false}" th:onclick="replyButtonClick(this.getAttribute('data-id'), this.getAttribute('id'), [['js-comment-' + ${iterStat.count}]], [[${layer.master.username}]], [[${iterStat.count}]], 0)"><b>评论</b></a></h5>
+								</div>
+
+							</div><!-- post-info -->
+
+							<p>[(${layer.master.content})]</p>
+
+						</div>
+
+						<div class="comment" th:each="replier, layerIterStat: ${layer.replies}" th:id="'js-comment-layer-' + ${layerIterStat.count}">
+							<h5 class="reply-for">回复 @ <a href="javascript:void(0)"><b>[[${replier.replierName}]]</b></a></h5>
+
+							<div class="post-info">
+
+								<div class="left-area">
+									<a class="avatar" href="javascript:void(0)"><img th:src="@{~/blog/images/icons8-team-355979.png}" alt="Profile Image"></a>
+								</div>
+
+								<div class="middle-area">
+									<a class="name" href="#"><b>[[${replier.username}]]</b></a>
+									<h6 class="date">[[${#dates.format(replier.replyDate, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+								</div>
+
+								<div class="right-area">
+									<h5 class="reply-btn"><a href="javascript:void(0)" th:id="'js-layer-comment-area-btn-' + ${layerIterStat.count}" th:data-id="${false}" th:onclick="replyButtonClick(this.getAttribute('data-id'), this.getAttribute('id'), [['js-comment-layer-' + ${layerIterStat.count}]], [[${replier.username}]], [[${iterStat.count}]], [[${layerIterStat.count}]])"><b>评论</b></a></h5>
+								</div>
+
+							</div><!-- post-info -->
+
+							<p>[(${replier.content})]</p>
+
+						</div>
+
+					</div><!-- commnets-area -->
+
+					<a th:if="${isAll} != true" th:href="@{/archive(aid=${article.id}, page=${page + 1})}" class="more-comment-btn"><b>VIEW MORE COMMENTS</a>
+
+				</div><!-- col-lg-8 col-md-12 -->
+
+			</div><!-- row -->
+
+		</div><!-- container -->
+	</section>
+
+	<script id="MathJax-script" async th:src="@{https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js}"></script>
+
+	<script th:src="@{~/blog/common-js/likes.js}"></script>
+	
+	<script th:src="@{~/blog/common-js/views.js}"></script>
+	
+	<script th:src="@{~/blog/common-js/comment.js}"></script>
+
+	<script th:inline="javascript">
+		var aid = /*[[${article.id}]]*/'';
+
+		var idChanged = '';
+		
+		function postCommentButtonClick() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			var name = $("input[name='contact-form-name']").val();
+			var email = $("input[name='contact-form-email']").val();
+			var message = $("textarea[name='contact-form-message']").val();
+
+			if (!name || !email) {
+				alert('必须填写 name 和 email！');
+				return;
+			}
+			if (!message) {
+				alert('不能发送空评论！');
+				return;
+			}
+			
+			var postData = {
+				aid: aid,
+				name: name,
+				email: email,
+				message: message
+			};
+
+			var replyForUser = $('#js-reply-for-user').val();
+			if (replyForUser != null) {
+				postData['toUser'] = replyForUser;
+			}
+			var replyForFloor = $('#js-reply-for-floor').val();
+			if (replyForFloor != null) {
+				postData['floor'] = +replyForFloor;
+			}
+			var replyForLayer = $('#js-reply-for-layer').val();
+			if (replyForLayer != null) {
+				postData['layer'] = +replyForLayer;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/comment',
+				contentType: 'application/json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				data: JSON.stringify(postData),
+				dataType: 'json',
+				success: function(data) {
+					window.location.reload(false);
+				},
+			})
+		}
+
+		function replyButtonClick(dataId, btnId, commentId, username, floorNumber, layerNumber) {
+			if (dataId == 'true') {
+				if (idChanged != btnId) {
+					$('#' + idChanged).attr('data-id', false);
+					$('.comment-form #js-reply-for-user').remove();
+					$('.comment-form #js-reply-for-floor').remove();
+					$('.comment-form #js-reply-for-layer').remove();
+
+					$('#' + btnId).attr('data-id', true);
+					$('#' + commentId).append($('.comment-form'));
+					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-user" value="'+ username + '"/>'));
+					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-floor" value="'+ floorNumber + '"/>'));
+					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-layer" value="'+ layerNumber + '"/>'));
+				}
+				else {
+					$('#' + btnId).attr('data-id', false);
+					$('.comment-form #js-reply-for-user').remove();
+					$('.comment-form #js-reply-for-floor').remove();
+					$('.comment-form #js-reply-for-layer').remove();
+					$('#js-comment-area-move').prepend($('.comment-form'));
+				}
+			} else {
+				$('#' + btnId).attr('data-id', true);
+				$('#' + commentId).append($('.comment-form'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-user" value="'+ username + '"/>'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-floor" value="'+ floorNumber + '"/>'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-layer" value="'+ layerNumber + '"/>'));
+			}
+			idChanged = btnId;
+		}
+	</script>
+	
+</body>
+</html>

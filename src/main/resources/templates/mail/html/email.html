@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:remove="all"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>[[${#dates.format(subscriptionDate, 'yyyy-MM-dd HH:mm:ss')}]]</p>
+        <br>
+        <p>嗨！[[${recipientName}]]</p>
+        <br>
+        <p>您收到来自 <b>[[(${senderName}=='' ? '匿名用户': ${senderName})]]</b>（[(${senderEmail})]） 的回复：</p>
+        <br>
+        <p>[(${content})]</p>
+        <p>
+            <img src="../../../images/logo.png" th:src="|cid:${imageResourceName}|" />
+        </p>
+        <p>
+            感谢您的光临~ <br />
+            &emsp; <a th:href="@{https://nekosama.club}"><em>nekosama.club</em></a>
+        </p>
+    </body>
+</html>

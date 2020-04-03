@@ -1,0 +1,175 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{:: script}, ~{:: section})}">
+    <head>
+        <title>博客后台 | 分类目录管理</title>
+    </head>
+    <body>
+
+        <header>
+            <ul>
+                <li><a th:href="@{/manager/archives}">Articles</a></li>
+                <li><a th:href="@{/manager/users}">Users</a></li>
+                <li><a th:href="@{/manager/comments}">Reviews</a></li>
+                <li><a th:href="@{/manager/tags}">Tags</a></li>
+                <li><a th:href="@{/manager/categories}">Categories</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </header>
+        
+        <section>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>分类</th>
+                        <th>分类主题图像</th>
+                        <th>操作</th>
+                        <th>
+                            <input type="text" id="categoryText"/>
+                            <input type="file" id="js-bg-img" name="file">
+                            <button type="button" name="add" th:onclick="crudController(this, 'add');">新增</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="category,iterStat: ${categories}">
+                        <td><input type="checkbox" th:data-id="${category.id}" name="select" unchecked/></td>
+                        <td th:text="${iterStat.count}"></td>
+                        <td>
+                            <span th:id="${category.id}" th:onclick="editClick(this.getAttribute('id'))">[[${category.kind}]]</span>
+                        </td>
+                        <td>
+                            <div>
+                                <span th:id="'js-span-bg-image' + ${category.id}" th:onclick="editClick(this.getAttribute('id'))">[[${category.bgImage}]]</span>
+                                <input type="file" th:id="'js-upload-bg-image' + ${category.id}" name="file">
+                                <input type="submit" th:data-id="'js-upload-bg-image' + ${category.id}" th:onclick="fileUploadClick(this.getAttribute('data-id'))" value="上传图像">
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <button type="button" th:data-id="${category.id}" class="btn btn-success" th:onclick="crudController(this.getAttribute('data-id'), 'update');">应用修改</button>
+                            </div>
+                            <div>
+                                <button type="button" th:data-id="${category.id}" class="btn btn-danger" name="delete" th:onclick="crudController(this.getAttribute('data-id'), 'delete');">删除</button>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+        <script>
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var isEditState = false;
+            var idChanged = '';
+
+            function editClick(id) {
+                if (!isEditState) {
+                    isEditState = true;
+                    var $span = $("#" + id);
+                    var $input = $('<input type="text" id="modifyCategory-' + id + '" data-id="' + id + '" onclick="editClick(this.getAttribute(\'data-id\'))"/>').val($span.text());
+                    $span.removeAttr('text');
+                    $span.replaceWith($input);
+                }
+                else {
+                    if (idChanged != id) {
+                        var $input = $("#modifyCategory-" + idChanged);
+                        var $span = $('<span id="' + idChanged + '" onclick="editClick(this.getAttribute(\'id\'))"></span>').text($input.val());
+                        $input.replaceWith($span);
+
+                        var $span = $("#" + id);
+                        var $input = $('<input type="text" id="modifyCategory-' + id + '" data-id="' + id + '" onclick="editClick(this.getAttribute(\'data-id\'))"/>').val($span.text());
+                        $span.removeAttr('text');
+                        $span.replaceWith($input);
+                    }
+                    else {
+                        isEditState = false;
+                        var $input = $("#modifyCategory-" + id);
+                        var $span = $('<span id="' + id + '" onclick="editClick(this.getAttribute(\'id\'))"></span>').text($input.val());
+                        $input.replaceWith($span);
+                    }
+                }
+                idChanged = id;
+            }
+
+            function fileUploadClick(id) {
+                $("#" + id.replace("upload", "span")).text($('#' + id).val());
+                var formData = new FormData();
+                formData.append('file', $('#' + id)[0].files[0]);
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/upload',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function (data) {
+                    
+                    }
+                });
+            }
+
+            function crudController(data_id, operator) {
+                
+                switch (operator)
+                {
+                    case 'add':
+                        var categoryText = $("#categoryText").val();
+                        var bgImage = $('#js-upload-bg-image').val().split('\\').slice(-1)[0];
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/category',
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'add', kindName: categoryText, bgImage: bgImage}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'update':
+                        var categoryText = $("#" + data_id).text();
+                        var bgImage = $('#js-upload-bg-image' + data_id).val().split('\\').slice(-1)[0];
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/category/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'update', kindName: categoryText, bgImage: bgImage}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'delete':
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/api/category/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'delete'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                }
+            };
+        </script>
+    </body>
+</html>

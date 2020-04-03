@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{}, ~{:: section})}">
+    <head>
+        <title>404 | 找不到页面</title>
+    </head>
+    <body>
+        <header>
+            <ul>
+                <li><a th:href="@{/login}">登录</a></li>
+            </ul>
+        </header>
+
+        <section class="center-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-md-0"></div>
+                    <div class="col-lg-8 col-md-12">
+                        <a class="not-found" href="javascript:void(0)"><h1>竟然什么也没找到QAQ</h1></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

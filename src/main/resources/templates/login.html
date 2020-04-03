@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{}, ~{:: section})}" xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <title>博客后台 | 登录</title>
+    </head>
+    <body>
+
+        <header>
+            <ul><li><a th:href="@{/login}">登录</a></li></ul>
+        </header>
+
+        <section class="center-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-md-0"></div>
+                    <div class="col-lg-8 col-md-12">
+                        <div class="login-form">
+                            <b><h2>Sign in</h2></b>
+                            <b th:if="${param.error}">用户名或密码错误。</b>
+                            <b th:if="${param.logout}">您已注销。</b>
+                            
+                            <form th:action="@{/login}" method="post">
+                                <div class="row">
+                                    <div class="col-sm-6"><input class="form-control" type="text" name="username" placeholder="管理员账号" required/></div>
+                                    <div class="col-sm-6"><input class="form-control" type="password" name="password" placeholder="密码" required/></div>
+                                    <div class="col-sm-12"><input class="submit-btn" type="submit" value="登录"/></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

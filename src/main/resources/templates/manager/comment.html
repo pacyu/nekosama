@@ -1,0 +1,145 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li}, ~{:: script}, ~{:: section})}">
+    <head>
+        <title>博客后台 | 评论管理</title>
+    </head>
+    <body>
+
+        <header>
+            <ul>
+                <li><a th:href="@{/manager/archives}">Articles</a></li>
+                <li><a th:href="@{/manager/users}">Users</a></li>
+                <li><a th:href="@{/manager/comments}">Reviews</a></li>
+                <li><a th:href="@{/manager/tags}">Tags</a></li>
+                <li><a th:href="@{/manager/categories}">Categories</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </header>
+        
+        <section>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>评论文章 ID</th>
+                        <th>评论者</th>
+                        <th>@ID</th>
+                        <th>评论</th>
+                        <th>评论时间</th>
+                        <th>楼号</th>
+                        <th>层数</th>
+                        <th>关联楼</th>
+                        <th>关联楼 ID</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="comment,iterStat: ${comments}">
+                        <td><input type="checkbox" th:data-id="${comment.id}" name="select" unchecked/></td>
+                        <td th:text="${iterStat.count}"></td>
+                        <td><a th:href="@{/archive(aid=${comment.aid})}">[[${comment.aid}]]</a></td>
+                        <td th:text="${comment.uid}"></td>
+                        <td th:text="${comment.toUid}"></td>
+                        <td><span th:id="'js-edit-content-' + ${comment.id}" th:onclick="editClick(this.getAttribute('id'))">[[${comment.content}]]</span></td>
+                        <td th:text="${#dates.format(comment.postDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td><span th:id="'js-edit-floor-' + ${comment.id}" th:onclick="editClick(this.getAttribute('id'))">[[${comment.floor}]]</span></td>
+                        <td><span th:id="'js-edit-layer-' + ${comment.id}" th:onclick="editClick(this.getAttribute('id'))">[[${comment.layer}]]</span></td>
+                        <td><span th:id="'js-edit-relate-' + ${comment.id}" th:onclick="editClick(this.getAttribute('id'))">[[${comment.relate}]]</span></td>
+                        <td><span th:id="'js-edit-relateId-' + ${comment.id}" th:onclick="editClick(this.getAttribute('id'))">[[${comment.relateId}]]</span></td>
+                        <td>
+                            <div>
+                                <button type="button" class="btn btn-success" th:data-id="${comment.id}" name="update" th:onclick="crudController(this.getAttribute('data-id'), 'update');">应用修改</button>
+                                <button type="button" class="btn btn-danger" th:data-id="${comment.id}" name="delete" th:onclick="crudController(this.getAttribute('data-id'), 'delete');">删除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+        <script>
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var isEditState = false;
+            var idChanged = '';
+
+            function editClick(sid) {
+                if (!isEditState) {
+                    isEditState = true;
+                    var $span = $('#' + sid);
+                    var $input = $('<input type="text" id="' + sid + '" onclick="editClick(this.getAttribute(\'id\'))"/>').val($span.text());
+                    $span.replaceWith($input);
+                }
+                else {
+                    if (idChanged != sid) {
+                        var $input = $('#' + idChanged);
+                        var $span = $('<span id="' + idChanged + '" onclick="editClick(this.getAttribute(\'id\'))"></span>').text($input.val());
+                        $input.replaceWith($span);
+
+                        var $span = $('#' + sid);
+                        var $input = $('<input type="text" id="' + sid + '" onclick="editClick(this.getAttribute(\'id\'))"/>').val($span.text());
+                        $span.replaceWith($input);
+                    }
+                    else {
+                        isEditState = false;
+                        var $input = $('#' + sid);
+                        var $span = $('<span id="' + sid + '" onclick="editClick(this.getAttribute(\'id\'))"></span>').text($input.val());
+                        $input.replaceWith($span);
+                    }
+                }
+                idChanged = sid;
+            }
+
+            function crudController(data_id, operator) {
+                switch (operator)
+                {
+                    case 'update':
+                        var content = $("#js-edit-content-" + data_id).text();
+                        var floor = $("#js-edit-floor-" + data_id).text();
+                        var layer = $("#js-edit-layer-" + data_id).text();
+                        var relate = $("#js-edit-relate-" + data_id).text();
+                        var relateId = $("#js-edit-relateId-" + data_id).text();
+                        var postData = JSON.stringify({
+                            type: 'update',
+                            content: content,
+                            floor: Number(floor),
+                            layer: Number(layer),
+                            relate: Number(relate),
+                            relateId: relateId
+                        });
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/api/comment/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: postData,
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                    case 'delete':
+                        $.ajax({
+                            type: 'DELETE',
+                            url: '/api/comment/' + data_id,
+                            contentType: "application/json",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data: JSON.stringify({type: 'delete'}),
+                            dataType: 'json',
+                            success: function() {
+                                window.location.reload(false);
+                            }
+                        });
+                        break;
+                }
+            };
+        </script>
+    </body>
+</html>

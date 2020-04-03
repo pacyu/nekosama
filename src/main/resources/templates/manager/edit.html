@@ -1,0 +1,238 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{back-layout :: layout(~{:: title}, ~{:: li.replace-li}, ~{:: script}, ~{:: section.content})}">
+<head>
+    <title>博客后台 | 编辑</title>
+
+    <!-- <script th:src="@{~/blog/common-js/quill-1.3.6/quill.js}"></script> -->
+    
+    <style>
+        /* #editor { 
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        } */
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <ul>
+            <li class="replace-li"><a th:href="@{/manager/archives}">Articles</a></li>
+            <li class="replace-li"><a th:href="@{/manager/users}">Users</a></li>
+            <li class="replace-li"><a th:href="@{/manager/comments}">Reviews</a></li>
+            <li class="replace-li"><a th:href="@{/manager/tags}">Tags</a></li>
+            <li class="replace-li"><a th:href="@{/manager/categories}">Categories</a></li>
+            <li class="replace-li"><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </header>
+
+    <section class="content info-edit-form section center-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-0"></div>
+                <div class="col-lg-8 col-md-12">
+                    <div class="col-sm-12"><input type="text" id="title" class="form-control" autocomplete="off" placeholder="标题" th:value="${archive} == null ? '': ${archive.title}" required/></div>
+                    <div class="col-sm-12"><input type="text" id="introduction" class="form-control" autocomplete="off" placeholder="简介" th:value="${archive} == null ? '': ${archive.introduction}" required/></div>
+                    <div class="col-sm-12"><label>设置文章封面：<input type="file" id="imgPath"/><span id="coverName" onclick="editClick(this.getAttribute('id'))">[[${archive} == null ? '': ${archive.cover}]]</span></label></div>
+                    <textarea id="content" class="text-area-messge form-control" rows="20" cols="100" required>[[${archive} == null ? '': ${archive.content}]]</textarea>
+                    <div id="editor"></div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul id="js-input-selected-tags" style="list-style: none;">
+                                <!--/*/
+                                    <li th:each="tag,iterStat: (${archive} == null ? null: ${archive.tag})" th:id="'js-input-tag-' + ${iterStat.index}" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">[[${tag}]]<button th:id="'js-tag-btn-' + ${iterStat.index}" class="submit-btn" th:onclick="|delTagClick(${iterStat.index})|">×</button></li>
+                                /*/-->
+                            </ul>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="text" id="tag" class="form-control" autocomplete="off" placeholder="输入标签，按回车添加"/>
+                        </div>
+                    
+                        <div class="col-sm-12">
+                            <ul id="js-input-selected-categories" style="list-style: none;">
+                                <!--/*/
+                                    <li th:each="category,iterStat: (${archive} == null ? null: ${archive.category})" th:id="'js-input-category-' + ${iterStat.index}" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">[[${category}]]<button th:id="'js-category-btn-' + ${iterStat.index}" class="submit-btn" th:onclick="|delCategoryClick(${iterStat.index})|">×</button></li>
+                                /*/-->
+                            </ul>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="text" id="category" class="form-control" autocomplete="off" placeholder="输入分类，按回车添加"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="button" id="submit-release" class="btn btn-success" value="发布"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="button" id="submit-draft" class="btn btn-success" value="保存为草稿"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script th:inline="javascript">
+        var tagCounter = /*[[${tagNumber} == null? 0: ${tagNumber}]]*/0;
+        var categoryCounter = /*[[${categoryNumber} == null? 0: ${categoryNumber}]]*/0;
+        var isEditState = false;
+
+        function editClick(id) {
+            if (isEditState) {
+                isEditState = false;
+                var $input = $('#' + id);
+                var $span = $('<span id="' + id + '" onclick="editClick(this.getAttribute(\'id\'))">').text($input.val());
+                $input.replaceWith($span);
+            }
+            else {
+                isEditState = true;
+                var $span = $('#' + id);
+                var $input = $('<input type="text" id="' + id + '" onclick="editClick(this.getAttribute(\'id\'))">').val($span.text());
+                $span.replaceWith($input);
+            }
+        }
+        
+        $('#tag').keypress(function(event) {
+            var keyCode = (event.which ? event.which : event.keyCode);
+            if (keyCode == 13) {
+                var $tag = $('#tag').val();
+                $('#tag').val('');
+                $tagli = $('<li id="js-input-tag-' + tagCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $tag + '</li>');
+                $tagli.append('<button id="js-tag-btn-' + tagCounter.toString() + '" class="submit-btn" onclick="delTagClick(' + tagCounter.toString() + ')">×</button>');
+                $('#js-input-selected-tags').append($tagli);
+                tagCounter++;
+            }
+        });
+
+        $('#category').keypress(function(event) {
+            var keyCode = (event.which ? event.which : event.keyCode);
+            if (keyCode == 13) {
+                var $category = $('#category').val();
+                $('#category').val('');
+                $categoryli = $('<li id="js-input-category-' + categoryCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $category + '</li>');
+                $categoryli.append('<button id="js-category-btn-' + categoryCounter.toString() + '" class="submit-btn" onclick="delCategoryClick(' + categoryCounter.toString() + ')">×</button>');
+                $('#js-input-selected-categories').append($categoryli);
+                categoryCounter++;
+            }
+        });
+
+        function delTagClick(num) {
+            $('#js-input-tag-' + num).remove();
+            tagCounter--;
+        }
+
+        function delCategoryClick(num) {
+            $('#js-input-category-' + num).remove();
+            categoryCounter--;
+        }
+
+        $(document).ready(function() {
+            var url = /*[[${archive} == null ? '/api/archive' : '/api/archive/' + ${archive.id}]]*/ null;
+            var method = /*[[${archive} == null ? 'POST' : 'PUT']]*/ null;
+            var type = /*[[${archive} == null ? 'add' : 'update']]*/ null;
+            
+            $("#submit-release").on("click", function() {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                var title = $("#title").val();
+                var introduction = $("#introduction").val();
+                var content = $("#content").val();
+                var cover = $("#imgPath").val().split('\\').slice(-1)[0];
+                $("#coverName").text(cover);
+                var tags = [];
+                for (var i = 0; i < tagCounter; i++) {
+                    var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
+                    tags.push(tagText);
+                }
+                var categories = [];
+                for (var i = 0; i < categoryCounter; i++) {
+                    var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
+                    categories.push(categoryText);
+                }
+                
+                var postData = JSON.stringify({
+                    type: type,
+                    title: title,
+                    introduction: introduction,
+                    content: content,
+                    cover: cover,
+                    tags: tags,
+                    categories: categories,
+                    release: true
+                });
+                $.ajax({
+                    type: method,
+                    url: url,
+                    contentType: "application/json",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    data: postData,
+                    dataType: 'json',
+                    success: function(data) {
+                        window.location.href = '/manager';
+                    },
+                    failure: function(errMsg) {
+
+                    }
+                });
+            });
+
+            $("#submit-draft").on("click", function() {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                var title = $("#title").val();
+                var introduction = $("#introduction").val();
+                var content = $("#content").val();
+                var cover = $("#imgPath").val().split('\\').slice(-1)[0];
+                var tags = [];
+                for (var i = 0; i < tagCounter; i++) {
+                    var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
+                    tags.push(tagText);
+                }
+                var categories = [];
+                for (var i = 0; i < categoryCounter; i++) {
+                    var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
+                    categories.push(categoryText);
+                }
+                
+                var postData = JSON.stringify({
+                    type: type,
+                    title: title,
+                    introduction: introduction,
+                    content: content,
+                    cover: cover,
+                    tags: tags,
+                    categories: categories,
+                    release: false
+                });
+                $.ajax({
+                    type: method,
+                    url: url,
+                    contentType: "application/json",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    data: postData,
+                    dataType: 'json',
+                    success: function(data) {
+                        window.location.href = '/manager';
+                    },
+                    failure: function(errMsg) {
+
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script th:src="@{~/blog/common-js/ace-builds-1.4.8/src-noconflict/ace.js}" charset="utf-8"></script>
+
+    <script th:inline="javascript">
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+    </script>
+</body>
+</html>
