@@ -275,87 +275,88 @@
 					
 				}
 			});
+		});
 		
-			function postCommentButtonClick() {
-				var name = $("input[name='contact-form-name']").val();
-				var email = $("input[name='contact-form-email']").val();
-				var message = $("textarea[name='contact-form-message']").val();
+		function postCommentButtonClick() {
+			var name = $("input[name='contact-form-name']").val();
+			var email = $("input[name='contact-form-email']").val();
+			var message = $("textarea[name='contact-form-message']").val();
 
-				if (!name || !email) {
-					alert('必须填写 name 和 email！');
-					return;
-				}
-				if (!message) {
-					alert('不能发送空评论！');
-					return;
-				}
-				
-				var postData = {
-					aid: aid,
-					name: name,
-					email: email,
-					message: message
-				};
+			if (!name || !email) {
+				alert('必须填写 name 和 email！');
+				return;
+			}
+			if (!message) {
+				alert('不能发送空评论！');
+				return;
+			}
+			
+			var postData = {
+				aid: aid,
+				name: name,
+				email: email,
+				message: message
+			};
 
-				var replyForUser = $('#js-reply-for-user').val();
-				if (replyForUser != null) {
-					postData['toUser'] = replyForUser;
-				}
-				var replyForFloor = $('#js-reply-for-floor').val();
-				if (replyForFloor != null) {
-					postData['floor'] = +replyForFloor;
-				}
-				var replyForLayer = $('#js-reply-for-layer').val();
-				if (replyForLayer != null) {
-					postData['layer'] = +replyForLayer;
-				}
-
-				$.ajax({
-					type: 'POST',
-					url: '/api/comment',
-					contentType: 'application/json',
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader(header, token);
-					},
-					data: JSON.stringify(postData),
-					dataType: 'json',
-					success: function(data) {
-						window.location.reload(false);
-					},
-				})
+			var replyForUser = $('#js-reply-for-user').val();
+			if (replyForUser != null) {
+				postData['toUser'] = replyForUser;
+			}
+			var replyForFloor = $('#js-reply-for-floor').val();
+			if (replyForFloor != null) {
+				postData['floor'] = +replyForFloor;
+			}
+			var replyForLayer = $('#js-reply-for-layer').val();
+			if (replyForLayer != null) {
+				postData['layer'] = +replyForLayer;
 			}
 
-			function replyButtonClick(dataId, btnId, commentId, username, floorNumber, layerNumber) {
-				if (dataId == 'true') {
-					if (idChanged != btnId) {
-						$('#' + idChanged).attr('data-id', false);
-						$('.comment-form #js-reply-for-user').remove();
-						$('.comment-form #js-reply-for-floor').remove();
-						$('.comment-form #js-reply-for-layer').remove();
+			$.ajax({
+				type: 'POST',
+				url: '/api/comment',
+				contentType: 'application/json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				data: JSON.stringify(postData),
+				dataType: 'json',
+				success: function(data) {
+					window.location.reload(false);
+				},
+			})
+		}
 
-						$('#' + btnId).attr('data-id', true);
-						$('#' + commentId).append($('.comment-form'));
-						$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-user" value="'+ username + '"/>'));
-						$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-floor" value="'+ floorNumber + '"/>'));
-						$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-layer" value="'+ layerNumber + '"/>'));
-					}
-					else {
-						$('#' + btnId).attr('data-id', false);
-						$('.comment-form #js-reply-for-user').remove();
-						$('.comment-form #js-reply-for-floor').remove();
-						$('.comment-form #js-reply-for-layer').remove();
-						$('#js-comment-area-move').prepend($('.comment-form'));
-					}
-				} else {
+		function replyButtonClick(dataId, btnId, commentId, username, floorNumber, layerNumber) {
+			if (dataId == 'true') {
+				if (idChanged != btnId) {
+					$('#' + idChanged).attr('data-id', false);
+					$('.comment-form #js-reply-for-user').remove();
+					$('.comment-form #js-reply-for-floor').remove();
+					$('.comment-form #js-reply-for-layer').remove();
+
 					$('#' + btnId).attr('data-id', true);
 					$('#' + commentId).append($('.comment-form'));
 					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-user" value="'+ username + '"/>'));
 					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-floor" value="'+ floorNumber + '"/>'));
 					$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-layer" value="'+ layerNumber + '"/>'));
 				}
-				idChanged = btnId;
+				else {
+					$('#' + btnId).attr('data-id', false);
+					$('.comment-form #js-reply-for-user').remove();
+					$('.comment-form #js-reply-for-floor').remove();
+					$('.comment-form #js-reply-for-layer').remove();
+					$('#js-comment-area-move').prepend($('.comment-form'));
+				}
+			} else {
+				$('#' + btnId).attr('data-id', true);
+				$('#' + commentId).append($('.comment-form'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-user" value="'+ username + '"/>'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-floor" value="'+ floorNumber + '"/>'));
+				$('.comment-form').prepend($('<input type="hidden" id="js-reply-for-layer" value="'+ layerNumber + '"/>'));
 			}
-		});
+			idChanged = btnId;
+		}
+		
 	</script>
 	
 </body>
