@@ -22,7 +22,7 @@
 
 			<div class="row">
 				
-				<div class="col-lg-8 col-md-12">
+				<div class="col-lg-8 col-md-12 no-right-padding">
 					<div class="post-wrapper">
 
 						<h3 class="title"><a th:href="@{/archive(aid=(${about} == null? '': ${about.id}))}"><b>[[${about} == null? '' : ${about.title}]]</b></a></h3>
@@ -33,11 +33,15 @@
 					</div><!-- post-wrapper -->
 				</div><!-- col-sm-8 col-sm-offset-2 -->
 
-				<div class="col-lg-4 col-md-12 ">
+				<div class="col-lg-4 col-md-12 no-left-padding">
 
-					<div class="single-post info-area ">
-
-						<div class="about-area">
+					<div class="single-post info-area">
+						
+						<div class="sidebar-area">
+							<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=300 height=450 src="//music.163.com/outchain/player?type=0&id=910946153&auto=1&height=430"></iframe>
+						</div>
+						
+						<div class="sidebar-area about-area">
 							<h4 class="title"><b>赞赏码</b></h4>
 							<div class="blog-image"><img th:src="@{~/blog/images/2d_code.png}" alt="Blog Image"></div>
 						</div>

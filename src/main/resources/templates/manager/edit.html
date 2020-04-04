@@ -76,6 +76,8 @@
     <script th:inline="javascript">
         var tagCounter = /*[[${tagNumber} == null? 0: ${tagNumber}]]*/0;
         var categoryCounter = /*[[${categoryNumber} == null? 0: ${categoryNumber}]]*/0;
+        var tagCounterMax;
+        var categoryCounterMax;
         var isEditState = false;
 
         function editClick(id) {
@@ -102,6 +104,7 @@
                 $tagli.append('<button id="js-tag-btn-' + tagCounter.toString() + '" class="submit-btn" onclick="delTagClick(' + tagCounter.toString() + ')">×</button>');
                 $('#js-input-selected-tags').append($tagli);
                 tagCounter++;
+                tagCounterMax = tagCounter;
             }
         });
 
@@ -114,6 +117,7 @@
                 $categoryli.append('<button id="js-category-btn-' + categoryCounter.toString() + '" class="submit-btn" onclick="delCategoryClick(' + categoryCounter.toString() + ')">×</button>');
                 $('#js-input-selected-categories').append($categoryli);
                 categoryCounter++;
+                categoryCounterMax = categoryCounter
             }
         });
 
@@ -141,14 +145,20 @@
                 var cover = $("#imgPath").val().split('\\').slice(-1)[0];
                 $("#coverName").text(cover);
                 var tags = [];
-                for (var i = 0; i < tagCounter; i++) {
-                    var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
-                    tags.push(tagText);
+                for (var i = 0; i < tagCounterMax; i++) {
+                    if ($('#js-input-tag-' + i.toString()))
+                    {
+                        var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
+                        tags.push(tagText);
+                    }
                 }
                 var categories = [];
-                for (var i = 0; i < categoryCounter; i++) {
-                    var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
-                    categories.push(categoryText);
+                for (var i = 0; i < categoryCounterMax; i++) {
+                    if ($('#js-input-category-' + i.toString()))
+                    {
+                        var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
+                        categories.push(categoryText);
+                    }
                 }
                 
                 var postData = JSON.stringify({

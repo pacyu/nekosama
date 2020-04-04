@@ -9,7 +9,7 @@
 
 	<link th:href="@{~/blog/detail/css/responsive.css}" rel="stylesheet">
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/atelier-dune-light.min.css">
     
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
 	
@@ -20,13 +20,13 @@
 
 	<div class="slider"></div><!-- slider -->
 
-	<section class="post-area">
+	<section class="post-area section">
 		<div class="container">
 
 			<div class="row">
 
-				<div class="col-lg-1 col-md-0"></div>
-				<div class="col-lg-10 col-md-12">
+				<!-- <div class="col-lg-1 col-md-0"></div> -->
+				<div class="col-lg-8 col-md-12 no-right-padding">
 
 					<div class="main-post">
 
@@ -89,6 +89,34 @@
 
 					</div><!-- main-post -->
 				</div><!-- col-lg-8 col-md-12 -->
+
+				
+				<div class="col-lg-4 col-md-12 no-left-padding" id="show-area">
+
+					<div class="single-post info-area">
+
+						<div class="sidebar-area">
+							<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=300 height=450 src="//music.163.com/outchain/player?type=0&id=910946153&auto=1&height=430"></iframe>
+						</div>
+
+						<div class="sidebar-area about-area">
+							<h4 class="title"><b>赞赏码</b></h4>
+							<div class="blog-image"><img th:src="@{~/blog/images/2d_code.png}" alt="Blog Image"></div>
+						</div>
+
+						<div class="tag-area">
+
+							<h4 class="title"><b>TAG CLOUD</b></h4>
+							<ul th:each="tag: ${tags}">
+								<li><a th:href="@{/search(q=${tag.tag})}">[[${tag.tag}]]</a></li>
+							</ul>
+
+						</div><!-- subscribe-area -->
+
+					</div><!-- info-area -->
+
+				</div><!-- col-lg-4 col-md-12 -->
+				
 			</div><!-- row -->
 		</div><!-- container -->
 	</section><!-- post-area -->
@@ -131,7 +159,7 @@
 			<h4><b>发送评论</b></h4>
 			<div class="row">
 
-				<div class="col-lg-2 col-md-0"></div>
+				<!-- <div class="col-lg-2 col-md-0"></div> -->
 
 				<div class="col-lg-8 col-md-12" id="js-comment-area-move">
 					<div class="comment-form">
