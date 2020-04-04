@@ -36,15 +36,18 @@ public class ViewsRestController {
     public Map<String, Object> viewed(HttpServletRequest request, @PathVariable String id) {
         String remoteAddr = request.getRemoteAddr();
         Map<String, Object> resp = new HashMap<>();
-        if (remoteRepository.findByAddress(remoteAddr) == null) {
+        Remote remote = remoteRepository.findRemoteByMuilFields(id, remoteAddr);
+        if (remote == null) {
             Archive archive = archiveRepository.findById(id).get();
             archive.setViews(archive.getViews() + 1L);
             archiveRepository.save(archive);
-            resp.put("code", 200);
+            remoteRepository.save(new Remote(id, remoteAddr));
+            
+            resp.put("status", 200);
             resp.put("message", "Ok!");
         }
         else {
-            resp.put("code", 201);
+            resp.put("status", 201);
             resp.put("message", "Address " + remoteAddr + " already existed!");
         }
         return resp;

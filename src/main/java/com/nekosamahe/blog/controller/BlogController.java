@@ -136,6 +136,7 @@ public class BlogController {
         model.addAttribute("article", archive);
         model.addAttribute("archives", archives);
         model.addAttribute("categories", categories);
+        model.addAttribute("tags", tags);
         return "blog/detail";
     }
 

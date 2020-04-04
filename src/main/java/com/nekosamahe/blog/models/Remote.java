@@ -7,13 +7,24 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Remotes")
 public class Remote {
+
+    private String aid;
     
     private String address;
 
     public Remote() {}
 
-    public Remote (String address) {
+    public Remote (String aid, String address) {
+        this.aid = aid;
         this.address = address;
+    }
+
+    public String getAid() {
+        return aid;
+    }
+    
+    public void setAid(String aid) {
+        this.aid = aid;
     }
     
     public String getAddress() {
