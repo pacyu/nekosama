@@ -95,6 +95,25 @@
                 $span.replaceWith($input);
             }
         }
+
+        $("#content").keydown(function(event) {
+            var keyCode = (event.which ? event.which : event.keyCode);
+            if (keyCode == 9) {
+                event.preventDefault();
+                //document.execCommand('insertText', false, ' '.repeat(4));
+                var start = this.selectionStart;
+                
+                if (this.selectionStart != this.selectionEnd) {
+                    this.value = this.value.replace(
+                    this.value.substring(this.selectionStart, this.selectionEnd),
+                    (this.value.substring(0, this.selectionStart) + "\t" + this.value.substring(this.selectionStart)).substring(this.selectionStart, this.selectionEnd + 1).replace('\n', '\n\t'));
+                } else {
+                    this.value = this.value.substring(0, this.selectionStart) + "\t" + this.value.substring(this.selectionStart);
+                }
+                
+                this.selectionEnd = start + 1;
+            }
+        });
         
         $('#tag').keypress(function(event) {
             var keyCode = (event.which ? event.which : event.keyCode);
