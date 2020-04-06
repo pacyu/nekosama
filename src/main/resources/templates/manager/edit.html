@@ -120,7 +120,7 @@
             if (keyCode == 13) {
                 var $tag = $('#tag').val();
                 $('#tag').val('');
-                $tagli = $('<li id="js-input-tag-' + tagCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $tag + '</li>');
+                var $tagli = $('<li id="js-input-tag-' + tagCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $tag + '</li>');
                 $tagli.append('<button id="js-tag-btn-' + tagCounter.toString() + '" class="submit-btn" onclick="delTagClick(' + tagCounter.toString() + ')">×</button>');
                 $('#js-input-selected-tags').append($tagli);
                 tagCounter++;
@@ -133,7 +133,7 @@
             if (keyCode == 13) {
                 var $category = $('#category').val();
                 $('#category').val('');
-                $categoryli = $('<li id="js-input-category-' + categoryCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $category + '</li>');
+                var $categoryli = $('<li id="js-input-category-' + categoryCounter.toString() + '" style="float: left; padding: 0 0 0 8px; border: 1px solid #d1d5da; border-radius: 3px; background-color: #f1f8ff;">' + $category + '</li>');
                 $categoryli.append('<button id="js-category-btn-' + categoryCounter.toString() + '" class="submit-btn" onclick="delCategoryClick(' + categoryCounter.toString() + ')">×</button>');
                 $('#js-input-selected-categories').append($categoryli);
                 categoryCounter++;

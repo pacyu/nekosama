@@ -126,6 +126,10 @@ public class CommentRestController {
     @DeleteMapping(value="{id}")
     public Map<String, Object> delete(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         Comment comment = commentRepository.findById(id).get();
+        // List<Comment> comments = commentRepository.findByRelateId(comment.getId()); // 可选：删除该文章下该评论 ID 相关联的所有评论
+        // for (Comment comment2 : comments) {
+        //     commentRepository.deleteById(comment2.getId());
+        // }
         Archive archive = archiveRepository.findById(comment.getAid()).get();
         archive.setReviews(archive.getReviews() - 1L);
         archiveRepository.save(archive);

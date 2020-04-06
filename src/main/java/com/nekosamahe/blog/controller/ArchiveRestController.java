@@ -169,8 +169,14 @@ public class ArchiveRestController {
 		switch (_type)
 		{
 			case "delete":
+			{
+				List<Comment> comments = commentRepository.findByAid(id);
+				for (Comment comment : comments) {
+					commentRepository.deleteById(comment.getId());
+				}
 				archiveRepository.deleteById(id);
-				break;
+			}
+			break;
 		}
 		Map<String, Object> resp = new HashMap<>();
 		resp.put("message", _type + " sucessfully!");

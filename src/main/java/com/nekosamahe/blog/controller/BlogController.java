@@ -103,6 +103,10 @@ public class BlogController {
 
     @GetMapping("/archive")
     public String detailsView(@RequestParam Map<String, Object> postData, Model model) {
+        System.out.println("============================");
+        System.out.println(postData.get("aid"));
+        System.out.println("============================");
+
         String aid = (String)postData.get("aid");
         Integer pageCode = postData.get("page") == null ? 0 : Integer.parseInt((String)postData.get("page"));
         Archive archive = archiveRepository.findById(aid).get();

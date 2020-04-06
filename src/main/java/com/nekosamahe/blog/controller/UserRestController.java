@@ -28,6 +28,8 @@ import java.util.stream.*;
 public class UserRestController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @GetMapping(value="{id}")
     public User one(@PathVariable String id) {
@@ -56,6 +58,11 @@ public class UserRestController {
     @DeleteMapping(value="{id}")
     public Map<String, Object> delete(@PathVariable String id) {
         userRepository.deleteById(id);
+        List<Comment> comments = commentRepository.findByUid(id);
+        for (Comment comment : comments) {
+            commentRepository.deleteById(comment.getId());
+        }
+        
         Map<String, Object> resp = new HashMap<>();
         resp.put("message", "Delete sucessfully!");
         resp.put("status", 401);
