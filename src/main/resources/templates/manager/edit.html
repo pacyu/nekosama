@@ -77,8 +77,8 @@
         "use strict";
         var tagCounter = /*[[${tagNumber} == null? 0: ${tagNumber}]]*/0;
         var categoryCounter = /*[[${categoryNumber} == null? 0: ${categoryNumber}]]*/0;
-        var tagCounterMax;
-        var categoryCounterMax;
+        var tagCounterMax = tagCounter;
+        var categoryCounterMax = categoryCounter;
         var isEditState = false;
 
         function editClick(id) {
@@ -162,8 +162,7 @@
                 var title = $("#title").val();
                 var introduction = $("#introduction").val();
                 var content = $("#content").val();
-                var cover = $("#imgPath").val().split('\\').slice(-1)[0];
-                $("#coverName").text(cover);
+                var cover = $("#imgPath").val().split('\\').slice(-1)[0] == "" ? $("#coverName").text() : $("#imgPath").val().split('\\').slice(-1)[0];
                 var tags = [];
                 for (var i = 0; i < tagCounterMax; i++) {
                     if ($('#js-input-tag-' + i.toString()))
@@ -201,7 +200,7 @@
                     data: postData,
                     dataType: 'json',
                     success: function(data) {
-                        window.location.href = '/manager';
+                        window.location.href = '/manager/archive';
                     },
                     failure: function(errMsg) {
 
@@ -215,16 +214,22 @@
                 var title = $("#title").val();
                 var introduction = $("#introduction").val();
                 var content = $("#content").val();
-                var cover = $("#imgPath").val().split('\\').slice(-1)[0];
+                var cover = $("#imgPath").val().split('\\').slice(-1)[0] == "" ? $("#coverName").text() : $("#imgPath").val().split('\\').slice(-1)[0];
                 var tags = [];
                 for (var i = 0; i < tagCounter; i++) {
-                    var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
-                    tags.push(tagText);
+                    if ($('#js-input-tag-' + i.toString()))
+                    {
+                        var tagText = $('#js-input-tag-' + i.toString()).contents()[0].nodeValue;
+                        tags.push(tagText);
+                    }
                 }
                 var categories = [];
-                for (var i = 0; i < categoryCounter; i++) {
-                    var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
-                    categories.push(categoryText);
+                for (var i = 0; i < categoryCounterMax; i++) {
+                    if ($('#js-input-category-' + i.toString()))
+                    {
+                        var categoryText = $('#js-input-category-' + i.toString()).contents()[0].nodeValue;
+                        categories.push(categoryText);
+                    }
                 }
                 
                 var postData = JSON.stringify({
@@ -247,7 +252,7 @@
                     data: postData,
                     dataType: 'json',
                     success: function(data) {
-                        window.location.href = '/manager';
+                        window.location.href = '/manager/archive';
                     },
                     failure: function(errMsg) {
 
